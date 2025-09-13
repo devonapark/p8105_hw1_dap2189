@@ -57,7 +57,7 @@ factor_var = factor(c("male", "male", "female", "female")) --> is there a way to
 TAKING THE MEAN
 
 Take the mean of each variable in your dataframe. What works and what doesn’t?
-```{r}
+```{r, echo=TRUE, warning=FALSE}
 mean(pull(Problem2_df,random_number))
 mean(pull(Problem2_df,logical_greater_than_0))
 mean(pull(Problem2_df,character_var))
