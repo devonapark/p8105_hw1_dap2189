@@ -4,59 +4,80 @@ output: github_document
 date: "2025-09-13"
 ---
 
-
-```{r}
-library(moderndive)
-data("early_january_weather")
-```
-
-This rmkdwn document looks at `r data("early_january_weather")`
-
 #Problem 1
 
 This problem focuses the use of inline R code, plotting, and the behavior of ggplot for variables of different types.
 
-Use the code below to download the a package containing the penguins dataset:
-
-install.packages("moderndive")
-You only need to run this command once to install the package, and you can do so directly in the console. This code shouldn’t be executed by your RMarkdown file.
-
-Load the moderndive library, and use the following code to load the early_january_weather dataset:
-
+```{r}
+library(moderndive)
+library(tidyverse)
 data("early_january_weather")
-Write a short description of the dataset using inline R code; accessing the dataset help file can be informative. In your discussion, please include:
+```
 
-the variables in this dataset, 
-including names / values of important variables
-the size of the dataset (using nrow and ncol)
-the mean temperature
+Note: 
+I used below line in the console to see the first 6 rows (making sure I installed it correctly: `head(early_january_weather)`
 
 
-Make a scatterplot of temp (y) vs time_hour (x); color points using the humid variable (adding color = ... inside of aes in your ggplot code should help). Describe patterns that are apparent in this plot.
+This dataset looks at weather conditions in early January. This dataset has `r nrow(early_january_weather)` rows, `r ncol(early_january_weather)` columns, and a mean temperature of `r round(mean(early_january_weather$temp, na.rm = TRUE),2)` degrees.
 
-Export your scatterplot to your project directory using ggsave.
+Variables in this dataset include: `r names(early_january_weather)`. A summary of the variables and significant values can be seen below.
 
+```{r, echo=FALSE}
+summary(early_january_weather)
+```
+
+CREATING A SCATTER PLOT
+
+Based on the below scatterplot, it appears that temperature increases as we get later into January. As well, there is a similar trend with humidity: later in the month when the temperatures are higher, the humidity index increases. 
 
 ```{r}
-ggplot(name_of_data_frame, aes(x = , y = )) + geom_point()
-ggsave("scatter_plot.pdf", height = 4, width = 6)
+ggplot(early_january_weather, aes(x = time_hour, y = temp, color = humid)) + geom_point()
+
+ggsave("january_weather_and_humidity.pdf", height = 4, width = 6)
 ```
+
 
 #Problem 2
 
 This problem is intended to emphasize variable types and introduce coercion; some awareness of how R treats numeric, character, and factor variables is necessary for working with these data types in practice.
 
-Create a data frame comprised of:
+```{r}
+Problem2_df = tibble(
+    random_number = rnorm(10),
+    logical_greater_than_0 = random_number > 0,
+    character_var = c("My", "name", "is", "Jeff", "and", "I", "a","professor", "at", "Mailman"),
+    factor_size = factor(c("Small", "Medium", "Large", "Small", "Medium", "Large","Small", "Medium", "Large","Small"))
+)
 
-a random sample of size 10 from a standard Normal distribution
-a logical vector indicating whether elements of the sample are greater than 0
-a character vector of length 10
-a factor vector of length 10, with 3 different factor “levels”
-Try to take the mean of each variable in your dataframe. What works and what doesn’t?
+```
 
-Hint: for now, to take the mean of a variable in a dataframe, you need to pull the variable out of the dataframe. Try loading the tidyverse and using the pull function.
+Notes on creating a data frame comprised of:
+factor_var = factor(c("male", "male", "female", "female")) --> is there a way to do this without writing out all 10 times?'
 
-In some cases, you can explicitly convert variables from one type to another. Write a code chunk that applies the as.numeric function to the logical, character, and factor variables (please show this chunk but not the output). What happens, and why? Does this help explain what happens when you try to take the mean?
+TAKING THE MEAN
 
+Take the mean of each variable in your dataframe. What works and what doesn’t?
+```{r}
+mean(pull(Problem2_df,random_number))
+mean(pull(Problem2_df,logical_greater_than_0))
+mean(pull(Problem2_df,character_var))
+mean(pull(Problem2_df,factor_size))
+```
 
+We needed to use the pull function to pull the variable out of the dataset. 
 
+The mean of variable, "random_number" is `r mean(pull(Problem2_df,random_number))` and the mean of variable, "logical_greater_than_0" is `r mean(pull(Problem2_df,logical_greater_than_0))`. I cannot get the mean of variables "character_var" and "factor_size" becuase they are non-numeric values. The logical variable can be used in calculations because it gets a value of 1 if random_variable is greater than 0 or 0 if less than 0.
+
+FORCING VARIABLES
+
+Using `as.numeric()` to force a variable from original form into numeric:
+
+```{r, echo=TRUE, results='hide', warning=FALSE}
+as.numeric(Problem2_df$logical_greater_than_0)
+as.numeric(Problem2_df$character_var)
+as.numeric(Problem2_df$factor_size)
+```
+
+With the logical variable, it prints out values of 0 and 1. 
+With the character variable, it says "NA". I think this is because it cant convert text to numbers.
+With the factor variable, because it creates three categories, perhaps it assigns a value of 1-3 to each string value, and then outputs the number associated with the category. (ex. 3=small, 2=medium, 1=large)
