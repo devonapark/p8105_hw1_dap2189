@@ -4,7 +4,7 @@ output: github_document
 date: "2025-09-13"
 ---
 
-#Problem 1
+# Problem 1
 
 This problem focuses the use of inline R code, plotting, and the behavior of ggplot for variables of different types.
 
@@ -26,7 +26,7 @@ Variables in this dataset include: `r names(early_january_weather)`. A summary o
 summary(early_january_weather)
 ```
 
-CREATING A SCATTER PLOT
+## Creating a Scatter Plot
 
 Based on the below scatterplot, it appears that temperature increases as we get later into January. As well, there is a similar trend with humidity: later in the month when the temperatures are higher, the humidity index increases. 
 
@@ -37,7 +37,7 @@ ggsave("january_weather_and_humidity.pdf", height = 4, width = 6)
 ```
 
 
-#Problem 2
+# Problem 2
 
 This problem is intended to emphasize variable types and introduce coercion; some awareness of how R treats numeric, character, and factor variables is necessary for working with these data types in practice.
 
@@ -54,7 +54,7 @@ Problem2_df = tibble(
 Notes on creating a data frame comprised of:
 factor_var = factor(c("male", "male", "female", "female")) --> is there a way to do this without writing out all 10 times?'
 
-TAKING THE MEAN
+## Taking the Mean
 
 Take the mean of each variable in your dataframe. What works and what doesn’t?
 ```{r, echo=TRUE, warning=FALSE}
@@ -68,7 +68,7 @@ We needed to use the pull function to pull the variable out of the dataset.
 
 The mean of variable, "random_number" is `r mean(pull(Problem2_df,random_number))` and the mean of variable, "logical_greater_than_0" is `r mean(pull(Problem2_df,logical_greater_than_0))`. I cannot get the mean of variables "character_var" and "factor_size" becuase they are non-numeric values. The logical variable can be used in calculations because it gets a value of 1 if random_variable is greater than 0 or 0 if less than 0.
 
-FORCING VARIABLES
+## Forcing Variables
 
 Using `as.numeric()` to force a variable from original form into numeric:
 
